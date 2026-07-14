@@ -58,85 +58,83 @@ MESI = [
     "DICEMBRE",
 ]
 
-# CSS Avanzato per una Struttura Rigida e Uniforme
+# CSS Perfetto per uniformare il pulsante e la cella
 st.markdown(
     """
     <style>
     /* Titolo del Mese */
     .month-title {
         text-align: center;
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 800;
-        background-color: #1a1c23;
+        background-color: #1e293b;
         color: #ffffff !important;
         padding: 10px;
-        border: 2px solid #2d3748;
-        border-radius: 4px;
-        letter-spacing: 2px;
+        border-radius: 6px;
         margin-bottom: 10px;
+        border: 1px solid #334155;
     }
 
-    /* Intestazione Giorni della Settimana */
+    /* Intestazione Giorni */
     .day-header {
         text-align: center;
         font-weight: 800;
         font-size: 14px;
-        background-color: #2d3748;
-        color: #e2e8f0;
+        background-color: #0f172a;
+        color: #94a3b8;
         padding: 8px;
-        border: 1px solid #4a5568;
-        border-radius: 2px;
-        margin-bottom: 4px;
+        border-radius: 4px;
+        margin-bottom: 6px;
+        border: 1px solid #1e293b;
     }
 
-    /* Modifica dei bottoni Streamlit per renderli caselle squadrate e uniformi */
+    /* FORZA IL PULSANTE AD OCCUPARE TUTTA LA CELLA */
     div.stButton > button {
         width: 100% !important;
-        height: 65px !important;
-        font-size: 22px !important; /* NUMERI GRANDE */
-        font-weight: 800 !important;
-        background-color: #1a1c23 !important;
+        height: 85px !important;
+        background-color: #1e293b !important;
         color: #ffffff !important;
-        border: 2px solid #4a5568 !important;
-        border-radius: 4px !important;
-        padding: 0px !important;
+        border: 2px solid #334155 !important;
+        border-radius: 8px !important;
+        padding: 4px !important;
         margin: 0px !important;
         display: flex !important;
-        align-items: flex-start !important;
-        justify-content: flex-start !important;
-        padding-left: 8px !important;
-        padding-top: 4px !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        transition: all 0.2s ease-in-out;
     }
 
     div.stButton > button:hover {
         border-color: #00b0f0 !important;
-        background-color: #2d3748 !important;
+        background-color: #334155 !important;
     }
 
-    /* Box dei Badge incastrato sotto il bottone */
-    .badge-container {
-        background-color: #111318;
-        border: 1px solid #4a5568;
-        border-top: none;
-        border-radius: 0 0 4px 4px;
-        padding: 3px;
-        min-height: 26px;
+    /* Stile Numero Giorno (Grande al Centro/Alto) */
+    .day-num-style {
+        font-size: 26px;
+        font-weight: 900;
+        line-height: 1;
+        margin-top: 4px;
+    }
+
+    /* Contenitore Badge sotto il numero */
+    .badges-row {
         display: flex;
+        gap: 3px;
         justify-content: center;
         align-items: center;
-        gap: 3px;
-        margin-top: -6px;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
+        min-height: 20px;
     }
 
-    /* Singola Targhetta / Badge */
-    .badge-item {
+    /* Badge Singolo */
+    .badge-pill {
         font-size: 11px;
         font-weight: 800;
-        padding: 1px 6px;
-        border-radius: 2px;
-        display: inline-block;
-        line-height: 1.2;
+        padding: 2px 6px;
+        border-radius: 3px;
+        line-height: 1;
     }
     </style>
 """,
@@ -146,12 +144,12 @@ st.markdown(
 # Layout
 col_sidebar, col_main = st.columns([1, 4])
 
-# --- SIDEBAR COMPATTA (Senza Legenda) ---
+# --- SIDEBAR COMPATTA ---
 with col_sidebar:
     st.subheader("👤 Operatore")
 
     selected_user = st.radio(
-        "Seleziona chi inserisce:",
+        "Seleziona operatore:",
         options=list(USERS.keys()),
         format_func=lambda user: f"{user} ({USERS[user]['initial']})",
     )
@@ -160,22 +158,22 @@ with col_sidebar:
     st.markdown(
         f"""
         <div style="background-color: {u_info['color']}; color: {u_info['text_color']}; 
-                    padding: 12px; text-align: center; font-size: 16px; font-weight: 800; 
-                    border-radius: 4px; border: 2px solid #ffffff; margin-top: 10px;">
+                    padding: 10px; text-align: center; font-size: 15px; font-weight: 800; 
+                    border-radius: 6px; margin-top: 8px;">
             IN USO: {selected_user}
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("🗑️ Reset Tutto", key="reset_btn"):
         st.session_state.ferie_data = {}
         save_data({})
         st.rerun()
 
-# --- MAIN: CALENDARIO SQUADRATO ED ELEGANTE ---
+# --- MAIN: CALENDARIO UNIFORME ---
 with col_main:
     col_nav1, col_nav2, col_nav3 = st.columns([1, 3, 1])
 
@@ -212,7 +210,7 @@ with col_main:
             f"<div class='day-header'>{h}</div>", unsafe_allow_html=True
         )
 
-    # Matrice del Mese
+    # Matrice Mese
     cal = calendar.Calendar(firstweekday=0)
     month_days = cal.monthdayscalendar(
         st.session_state.current_year, st.session_state.current_month
@@ -223,9 +221,9 @@ with col_main:
         for day_idx, day in enumerate(week):
             with cols[day_idx]:
                 if day == 0:
-                    # Spazio vuoto allineato
+                    # Spazio vuoto per allineamento
                     st.markdown(
-                        "<div style='height: 95px;'></div>",
+                        "<div style='height: 85px;'></div>",
                         unsafe_allow_html=True,
                     )
                 else:
@@ -234,8 +232,30 @@ with col_main:
                         date_key, []
                     )
 
-                    # Click sul Bottone del Giorno
-                    if st.button(f"{day}", key=f"btn_{date_key}"):
+                    # Costruzione HTML dei Badge interni al bottone
+                    badges_list = []
+                    for user in active_users:
+                        if user in USERS:
+                            info = USERS[user]
+                            badges_list.append(
+                                f'<span class="badge-pill" style="background-color: {info["color"]}; '
+                                f'color: {info["text_color"]};">{info["initial"]}</span>'
+                            )
+
+                    badges_html = (
+                        "".join(badges_list) if badges_list else "&nbsp;"
+                    )
+
+                    # ETICHETTA DEL BOTTONE COMPLETA (Numero Grande + Badge)
+                    btn_label = f"""
+                    <div class="day-num-style">{day}</div>
+                    <div class="badges-row">{badges_html}</div>
+                    """
+
+                    # Pulsante Unico e Compatto
+                    if st.button(
+                        f"{day}", key=f"btn_{date_key}", help=f"Data: {date_key}"
+                    ):
                         if date_key not in st.session_state.ferie_data:
                             st.session_state.ferie_data[date_key] = []
 
@@ -253,26 +273,3 @@ with col_main:
 
                         save_data(st.session_state.ferie_data)
                         st.rerun()
-
-                    # Costruzione Targhette (M, F, C) incastrate nella griglia
-                    badges_list = []
-                    for user in active_users:
-                        if user in USERS:
-                            info = USERS[user]
-                            badges_list.append(
-                                f'<span class="badge-item" style="background-color: {info["color"]}; '
-                                f'color: {info["text_color"]};">{info["initial"]}</span>'
-                            )
-
-                    badges_html = (
-                        "".join(badges_list) if badges_list else "&nbsp;"
-                    )
-
-                    st.markdown(
-                        f"""
-                        <div class="badge-container">
-                            {badges_html}
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
