@@ -54,13 +54,14 @@ MESI = [
     "DICEMBRE",
 ]
 
-# Style CSS uniforme per l'intera cella
+# CSS con forcing totale per larghezza e dimensione del numero
 st.markdown(
     """
     <style>
+    /* Titolo del Mese */
     .month-title {
         text-align: center;
-        font-size: 24px;
+        font-size: 26px;
         font-weight: 800;
         background-color: #1e293b;
         color: #ffffff !important;
@@ -70,10 +71,11 @@ st.markdown(
         border: 1px solid #334155;
     }
 
+    /* Intestazione Giorni */
     .day-header {
         text-align: center;
         font-weight: 800;
-        font-size: 15px;
+        font-size: 16px;
         background-color: #0f172a;
         color: #94a3b8;
         padding: 8px;
@@ -82,11 +84,15 @@ st.markdown(
         border: 1px solid #1e293b;
     }
 
-    /* Stile uniforme per i bottoni del giorno */
-    div.stButton > button {
+    /* FORZA IL PULSANTE AD OCCUPARE IL 100% DI LARGHEZZA E ALTEZZA */
+    div[data-testid="stColumn"] div.stButton {
         width: 100% !important;
-        height: 55px !important;
-        font-size: 24px !important;
+    }
+
+    div[data-testid="stColumn"] div.stButton > button {
+        width: 100% !important;
+        height: 70px !important;            /* Pulsante ben alto */
+        font-size: 32px !important;          /* NUMERO ENORME */
         font-weight: 900 !important;
         background-color: #1e293b !important;
         color: #ffffff !important;
@@ -94,34 +100,39 @@ st.markdown(
         border-radius: 6px 6px 0px 0px !important;
         margin: 0px !important;
         padding: 0px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
-    div.stButton > button:hover {
+    div[data-testid="stColumn"] div.stButton > button:hover {
         border-color: #00b0f0 !important;
         background-color: #334155 !important;
+        color: #00b0f0 !important;
     }
 
-    /* Box dei badge unito perfettamente al bottone */
+    /* Box dei badge unito perfettamente alla base del bottone */
     .badge-box {
         background-color: #0f172a;
         border: 2px solid #334155;
         border-top: none;
         border-radius: 0px 0px 6px 6px;
-        height: 28px;
+        height: 30px;
+        width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
         margin-top: -1px;
         margin-bottom: 10px;
     }
 
     .badge-pill {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 800;
-        padding: 1px 6px;
+        padding: 2px 7px;
         border-radius: 3px;
-        line-height: 1.2;
+        line-height: 1;
     }
     </style>
 """,
@@ -208,7 +219,7 @@ with col_main:
             with cols[day_idx]:
                 if day == 0:
                     st.markdown(
-                        "<div style='height: 93px;'></div>",
+                        "<div style='height: 100px;'></div>",
                         unsafe_allow_html=True,
                     )
                 else:
@@ -217,7 +228,7 @@ with col_main:
                         date_key, []
                     )
 
-                    # 1. Bottone con Numero Grande (24px)
+                    # 1. Bottone con Numero Enorme (32px) e larghezza 100%
                     if st.button(f"{day}", key=f"btn_{date_key}"):
                         if date_key not in st.session_state.ferie_data:
                             st.session_state.ferie_data[date_key] = []
@@ -237,7 +248,7 @@ with col_main:
                         save_data(st.session_state.ferie_data)
                         st.rerun()
 
-                    # 2. Badge perfettamente saldati al fondo del bottone
+                    # 2. Contenitore Targhette Unito in Basso
                     badges_list = []
                     for user in active_users:
                         if user in USERS:
